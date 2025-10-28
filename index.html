@@ -84,7 +84,14 @@
   </footer>
 
   <script>
-    // Função para criptografar (Cifra de César aprimorada)
+    // Função genérica: desloca letra conforme o valor indicado (positivo = criptografar, negativo = descriptografar)
+    function deslocarLetra(letra, valor) {
+      const codigo = letra.charCodeAt(0) - 65;
+      const novo = (codigo + valor + 26) % 26;
+      return String.fromCharCode(novo + 65);
+    }
+
+    // Função de criptografia
     function criptografar() {
       let texto = document.getElementById("mensagem").value.toUpperCase();
       let chave = document.getElementById("chave").value.toUpperCase();
@@ -97,19 +104,15 @@
       let resultado = "";
 
       for (let i = 0; i < texto.length; i++) {
-        let letra = texto[i];
+        const letra = texto[i];
         if (/[A-Z]/.test(letra)) {
-          let codigo = letra.charCodeAt(0) - 65;
           if ("AEIOU".includes(letra)) {
-            // Vogais deslocam +3
-            codigo = (codigo + 3) % 26;
+            resultado += deslocarLetra(letra, 3); // vogais +3
           } else {
-            // Consoantes deslocam pelo tamanho da chave
-            codigo = (codigo + deslocamento) % 26;
+            resultado += deslocarLetra(letra, deslocamento); // consoantes + chave.length
           }
-          resultado += String.fromCharCode(codigo + 65);
         } else {
-          resultado += letra; // Mantém espaços e pontuação
+          resultado += letra;
         }
       }
 
@@ -117,7 +120,7 @@
         "🔒 <b>Texto Cifrado:</b> " + resultado;
     }
 
-    // Função para descriptografar (correção aplicada)
+    // Função de descriptografia (corrigida)
     function descriptografar() {
       let texto = document.getElementById("mensagem").value.toUpperCase();
       let chave = document.getElementById("chave").value.toUpperCase();
@@ -130,17 +133,14 @@
       let resultado = "";
 
       for (let i = 0; i < texto.length; i++) {
-        let letra = texto[i];
+        const letra = texto[i];
         if (/[A-Z]/.test(letra)) {
-          let codigo = letra.charCodeAt(0) - 65;
-          if ("AEIOU".includes(letra)) {
-            // Vogais voltam 3 posições
-            codigo = (codigo - 3 + 26) % 26;
+          if ("AEIOU".includes(deslocarLetra(letra, -3))) {
+            // volta o que era vogal (corrige a inversão)
+            resultado += deslocarLetra(letra, -3);
           } else {
-            // Consoantes voltam o deslocamento da chave
-            codigo = (codigo - deslocamento + 26) % 26;
+            resultado += deslocarLetra(letra, -deslocamento);
           }
-          resultado += String.fromCharCode(codigo + 65);
         } else {
           resultado += letra;
         }
@@ -152,4 +152,3 @@
   </script>
 </body>
 </html>
-
