@@ -87,7 +87,7 @@
     // Função para criptografar (Cifra de César aprimorada)
     function criptografar() {
       let texto = document.getElementById("mensagem").value.toUpperCase();
-      let chave = document.getElementById("chave").value;
+      let chave = document.getElementById("chave").value.toUpperCase();
       if (!texto || !chave) {
         alert("Por favor, digite a mensagem e a chave secreta!");
         return;
@@ -99,26 +99,28 @@
       for (let i = 0; i < texto.length; i++) {
         let letra = texto[i];
         if (/[A-Z]/.test(letra)) {
-          let codigo = letra.charCodeAt(0);
-          // Vogais deslocam +3
+          let codigo = letra.charCodeAt(0) - 65;
           if ("AEIOU".includes(letra)) {
-            codigo = ((codigo - 65 + 3) % 26) + 65;
+            // Vogais deslocam +3
+            codigo = (codigo + 3) % 26;
           } else {
-            // Consoantes deslocam conforme o tamanho da chave
-            codigo = ((codigo - 65 + deslocamento) % 26) + 65;
+            // Consoantes deslocam pelo tamanho da chave
+            codigo = (codigo + deslocamento) % 26;
           }
-          resultado += String.fromCharCode(codigo);
+          resultado += String.fromCharCode(codigo + 65);
         } else {
           resultado += letra; // Mantém espaços e pontuação
         }
       }
-      document.getElementById("resultado").innerHTML = "🔒 <b>Texto Cifrado:</b> " + resultado;
+
+      document.getElementById("resultado").innerHTML =
+        "🔒 <b>Texto Cifrado:</b> " + resultado;
     }
 
-    // Função para descriptografar
+    // Função para descriptografar (correção aplicada)
     function descriptografar() {
       let texto = document.getElementById("mensagem").value.toUpperCase();
-      let chave = document.getElementById("chave").value;
+      let chave = document.getElementById("chave").value.toUpperCase();
       if (!texto || !chave) {
         alert("Por favor, digite o texto cifrado e a chave secreta!");
         return;
@@ -130,19 +132,24 @@
       for (let i = 0; i < texto.length; i++) {
         let letra = texto[i];
         if (/[A-Z]/.test(letra)) {
-          let codigo = letra.charCodeAt(0);
+          let codigo = letra.charCodeAt(0) - 65;
           if ("AEIOU".includes(letra)) {
-            codigo = ((codigo - 65 - 3 + 26) % 26) + 65;
+            // Vogais voltam 3 posições
+            codigo = (codigo - 3 + 26) % 26;
           } else {
-            codigo = ((codigo - 65 - deslocamento + 26) % 26) + 65;
+            // Consoantes voltam o deslocamento da chave
+            codigo = (codigo - deslocamento + 26) % 26;
           }
-          resultado += String.fromCharCode(codigo);
+          resultado += String.fromCharCode(codigo + 65);
         } else {
           resultado += letra;
         }
       }
-      document.getElementById("resultado").innerHTML = "💬 <b>Texto Decifrado:</b> " + resultado;
+
+      document.getElementById("resultado").innerHTML =
+        "💬 <b>Texto Decifrado:</b> " + resultado;
     }
   </script>
 </body>
 </html>
+
