@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Codificador / Decodificador</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #0a192f, #0f3460);
+      color: #fff;
+      font-family: "Poppins", sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      color: #00eaff;
+      font-size: 2.2em;
+      margin-bottom: 20px;
+    }
+    .box {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 30px;
+      width: 90%;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 20px rgba(0, 234, 255, 0.2);
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      font-size: 1em;
+      color: #fff;
+    }
+    input, textarea {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    button {
+      background: linear-gradient(90deg, #00b7ff, #007bff);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #007bff, #00b7ff);
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #00ffcc;
+      font-size: 1.1em;
+    }
+    footer {
+      margin-top: 30px;
+      color: #aaa;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔐 Mini Codificador / Decodificador</h1>
+  <div class="box">
+    <p>Este projeto demonstra a <b>Criptografia Simétrica</b> através de uma <b>Cifra de César aprimorada</b>, onde vogais e consoantes são tratadas de formas diferentes.</p>
+
+    <label>Mensagem:</label>
+    <textarea id="mensagem" rows="3" placeholder="Digite sua mensagem..."></textarea>
+
+    <label>Chave secreta:</label>
+    <input type="text" id="chave" placeholder="Digite sua chave... (ex: TECH)">
+
+    <button onclick="criptografar()">Criptografar 🔒</button>
+    <button onclick="descriptografar()">Descriptografar 🔓</button>
+
+    <div class="result" id="resultado"></div>
+  </div>
+
+  <footer>
+    Desenvolvido por <b>Felipe Mendes</b> – 2º Ano do Ensino Médio<br>
+    Trabalho Avaliativo – Segurança de Redes e Criptografia
+  </footer>
+
+  <script>
+    // Função para criptografar (Cifra de César aprimorada)
+    function criptografar() {
+      let texto = document.getElementById("mensagem").value.toUpperCase();
+      let chave = document.getElementById("chave").value;
+      if (!texto || !chave) {
+        alert("Por favor, digite a mensagem e a chave secreta!");
+        return;
+      }
+
+      let deslocamento = chave.length;
+      let resultado = "";
+
+      for (let i = 0; i < texto.length; i++) {
+        let letra = texto[i];
+        if (/[A-Z]/.test(letra)) {
+          let codigo = letra.charCodeAt(0);
+          // Vogais deslocam +3
+          if ("AEIOU".includes(letra)) {
+            codigo = ((codigo - 65 + 3) % 26) + 65;
+          } else {
+            // Consoantes deslocam conforme o tamanho da chave
+            codigo = ((codigo - 65 + deslocamento) % 26) + 65;
+          }
+          resultado += String.fromCharCode(codigo);
+        } else {
+          resultado += letra; // Mantém espaços e pontuação
+        }
+      }
+      document.getElementById("resultado").innerHTML = "🔒 <b>Texto Cifrado:</b> " + resultado;
+    }
+
+    // Função para descriptografar
+    function descriptografar() {
+      let texto = document.getElementById("mensagem").value.toUpperCase();
+      let chave = document.getElementById("chave").value;
+      if (!texto || !chave) {
+        alert("Por favor, digite o texto cifrado e a chave secreta!");
+        return;
+      }
+
+      let deslocamento = chave.length;
+      let resultado = "";
+
+      for (let i = 0; i < texto.length; i++) {
+        let letra = texto[i];
+        if (/[A-Z]/.test(letra)) {
+          let codigo = letra.charCodeAt(0);
+          if ("AEIOU".includes(letra)) {
+            codigo = ((codigo - 65 - 3 + 26) % 26) + 65;
+          } else {
+            codigo = ((codigo - 65 - deslocamento + 26) % 26) + 65;
+          }
+          resultado += String.fromCharCode(codigo);
+        } else {
+          resultado += letra;
+        }
+      }
+      document.getElementById("resultado").innerHTML = "💬 <b>Texto Decifrado:</b> " + resultado;
+    }
+  </script>
+</body>
+</html>
